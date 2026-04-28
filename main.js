@@ -9,7 +9,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 }, // Optionnel : ajoute de la gravité
+            gravity: { y: 0 }, // Optionnel : ajoute de la gravité
             debug: false
         }
     },
@@ -62,23 +62,34 @@ function update() {
     if (gameOver) {
         return;
     }
+
+    // --- MOUVEMENT HORIZONTAL (X) ---
     if (cursors.left.isDown) {
         player.setVelocityX(-160);
-
         player.anims.play('left', true);
     }
     else if (cursors.right.isDown) {
         player.setVelocityX(160);
-
         player.anims.play('right', true);
     }
     else {
         player.setVelocityX(0);
-
-        player.anims.play('turn');
+        // On ne joue 'turn' ici que si on ne bouge pas non plus verticalement
     }
 
-    if (cursors.up.isDown && player.body.touching.down) {
-        player.setVelocityY(-330);
+    // --- MOUVEMENT VERTICAL (Y) ---
+    if (cursors.up.isDown) {
+        player.setVelocityY(-160);
+    }
+    else if (cursors.down.isDown) {
+        player.setVelocityY(160);
+    }
+    else {
+        player.setVelocityY(0);
+    }
+
+    // --- GESTION DE L'ANIMATION D'ARRÊT ---
+    if (player.body.velocity.x === 0 && player.body.velocity.y === 0) {
+        player.anims.play('turn');
     }
 }
